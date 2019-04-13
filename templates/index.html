@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Clark Tank - Steam followers</title>
+  <link rel="stylesheet" href="/static/bulma.min.css">
+  <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-64376900-2"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'UA-64376900-2');
+  </script>
+
+</head>
+
+<body>
+  <section class="section">
+    <div class="container">
+      <h1 class="title">
+        Clark Tank - Steam Community Followers
+      </h1>
+
+      <div>
+        Inspired by <a href="https://youtu.be/X_skUDML0z4?t=193" target="_blank">this</a> episode of Clark Tank
+      </div>
+
+      <nav class="level">
+          <p class="level-item has-text-centered">
+              Order by:
+          </p>
+          <p class="level-item has-text-centered">
+            <a href="/?q=followers" class="link is-info">Followers</a>
+          </p>
+          <p class="level-item has-text-centered">
+            <a href="/?q=released" class="link is-info">Released</a>
+          </p>
+          <p class="level-item has-text-centered">
+            <a href="/?q=reviews" class="link is-info">Reviews</a>
+          </p>
+        </nav>
+
+      <div class="content">
+
+        <table class="table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Thumbnail</th>
+              <th>Title</th>
+              <th>Followers</th>
+              <th>Released</th>
+              <th>Reviews</th>
+              <th>Sentiment</th>
+              <th>Updated</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for item in items %}
+            <tr {% if "mixed" in item.sentiment.lower() %}style="background-color: orange"{% elif "negative" in item.sentiment.lower() %}style="background-color: red"{% elif "overwhelmingly positive" in item.sentiment.lower() %}style="background-color: green"{% endif %}>
+              <th>(<a href="/trend/{{item.steam_id}}"> trend </a>) {{item.steam_id}}</th>
+              <th><img src="{{item.thumb_url}}"/></th>
+              <th><a href="https://store.steampowered.com/app/{{item.steam_id}}" target="_blank">{{item.title}}</a></th>
+              <th><a href="https://steamcommunity.com/games/{{item.steam_id}}" target="_blank">{{item.followers}}</a></th>
+              <th>{{item.released}}</th>
+              <th>{{item.reviews}}</th>
+              <th>{{item.sentiment}} ({{item.perc}}%)</th>
+              <th>{{item.last_updated.strftime('%Y-%m-%d')}}</th>
+            </tr>
+            {% endfor %}
+            
+          </tbody>
+        </table>
+
+      </div>
+    </div>
+  </section>
+</body>
+
+</html>

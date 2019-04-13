@@ -1,0 +1,7 @@
+cron:
+# - description: "update_new_releases"
+#   url: /cron/top_sellers
+#   schedule: every 12 hours
+- description: "update_games"
+  url: /cron/update_games
+  schedule: every 12 hours

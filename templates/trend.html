@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Clark Tank - Steam followers</title>
+  <link rel="stylesheet" href="/static/bulma.min.css">
+  <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
+  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-64376900-2"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'UA-64376900-2');
+  </script>
+</head>
+
+<body>
+  <section class="section">
+    <div class="container">
+      <a href="/">
+          <h1 class="title">
+            Clark Tank - Steam Community Followers
+          </h1>
+      </a>
+
+      <div>
+        Inspired by <a href="https://youtu.be/X_skUDML0z4?t=193" target="_blank">this</a> episode of Clark Tank
+      </div>
+
+      <h3>Trend for {{game_data.title}}</h3>
+
+      <div class="content">
+
+        <div id="plot"><!-- Plotly chart will be drawn inside this DIV --></div>
+
+      </div>
+    </div>
+  </section>
+
+  <script>
+      var items = {{items|safe}};
+      var data = [
+        {
+          x: items.time,
+          y: items.followers,
+          name: "Followers",
+          type: 'scatter'
+        },
+        {
+          x: items.time,
+          y: items.reviews,
+          name: "Reviews",
+          type: 'scatter'
+        }
+      ];
+
+      Plotly.newPlot('plot', data, {}, {showSendToCloud: false});
+  </script>
+</body>
+
+</html>

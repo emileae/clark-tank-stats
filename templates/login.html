@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Turbulent Flux Flow Meter - Login</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700">
+  <style>
+      html, body{
+          font-family: "Roboto";
+      }
+      #app{
+          position:absolute;
+          top: 0px;
+          bottom: 0px;
+          left: 0px;
+          right: 0px;
+          width: 100%;
+          height: 100%;
+          background-image: url('/static/images/firstframe.jpg');
+          background-position: center;
+          background-size: cover;
+      }
+
+    /* Password input */
+    .form{
+        text-align:center;
+        font-size: 25px;
+        position: absolute;
+        top: 0px;
+        bottom: 0px;
+        left: 0px;
+        right: 0px;
+        margin: auto;
+        display: inline-block;
+        width: 400px;
+        color: #fff;
+        height: 62px;
+    }
+    .password-input{
+        width:100%;
+        font-size: 25px;
+        padding: 5px;
+        border: 0px;
+        box-shadow: none;
+        background-color: rgba(255,255,255,0.3);
+        height: 30px;
+    }
+    .password-submit{
+        font-size: 25px;
+        padding: 5px;
+        background: none;
+        border:0px;
+        box-shadow: none;
+        color: #fff;
+        position: absolute;
+        right: 0px;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus,
+    button:focus {
+        outline: none;
+    }
+    *:focus {
+        outline: none;
+    }
+  </style>
+</head>
+
+<body>
+    <div id="app">
+
+        <div id="login">
+            <form class="form" action="/api/password" method="post" onsubmit="submit_password()">
+                <input class="password-input" type="password" placeholder="Password" name="password" /><br>
+                <input class="password-submit" type="submit" value="login" />
+            </form>
+        </div>
+
+    </div>
+    <script type="text/javascript" src="/static/dist/axios.min.js"></script>
+    <script>
+        function submit_password(){
+            event.preventDefault();
+            var pw_field =  event.target.elements.password.value;
+            var form = event.target;
+            var user_id = localStorage.getItem("user_id");
+            var data = {
+                password: pw_field,
+                user_id: user_id ? user_id : false
+            }
+            axios({
+                method: 'post',
+                url: '/api/password',
+                headers: {
+                    'Content-type': 'application/json'
+                },
+                data:data
+              })
+              .then(function (response) {
+                console.log(response);
+                if (response.data.success){
+                    localStorage.setItem("login", response.data.local_storage);
+                    localStorage.setItem("user_id", response.data.user_id);
+                    pw_field = "";
+                    window.location.href = "/";
+                }else{
+                    pw_field = "";
+                }
+              })
+              .catch(function (error) {
+                console.log("error: ", error);
+              });
+        }
+    </script>
+</body>
+
+</html>
