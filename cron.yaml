@@ -5,3 +5,6 @@ cron:
 - description: "update_games"
   url: /cron/update_games
   schedule: every 12 hours
+- description: "update_top_games"
+  url: /cron/update_top_games
+  schedule: every 24 hours
