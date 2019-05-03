@@ -159,59 +159,64 @@ def get_new_releases():
 def update_top_reviewed():
     results = []
     
-    items = model.Data.query().order(-model.Data.reviews).fetch(500)
+    items = model.Data.query().order(-model.Data.reviews).fetch(100)
 
     for item in items:
         followers = get_steam_followers(item.steam_id)
 
-        r = requests.get('https://store.steampowered.com/app/%s' % item.steam_id)
-        soup = BeautifulSoup(r.text, 'html.parser')
-        sentiment = soup.select(".user_reviews_summary_row .game_review_summary")
-        if len(sentiment) > 0:
-            sentiment = str(sentiment[0].contents[0])
-        else:
-            sentiment = item.sentiment
+        try:
 
-        perc = soup.select(".user_reviews_summary_row .responsive_reviewdesc")
-        if len(perc) > 0:
-            try:
-                perc = str(perc[0].contents[0])
-                rest = perc.split("%")[0]
-                rest2 = perc.split("%")[1]
-                perc = int( re.sub('[^0-9,]', "", rest) )
-                reviews = int( re.sub('[^0-9,]', "", rest2).replace(",", "") )
-            except:
+            r = requests.get('https://store.steampowered.com/app/%s' % item.steam_id, timeout=10)
+            soup = BeautifulSoup(r.text, 'html.parser')
+            sentiment = soup.select(".user_reviews_summary_row .game_review_summary")
+            if len(sentiment) > 0:
+                sentiment = str(sentiment[0].contents[0])
+            else:
+                sentiment = item.sentiment
+
+            perc = soup.select(".user_reviews_summary_row .responsive_reviewdesc")
+            if len(perc) > 0:
+                try:
+                    perc = str(perc[0].contents[0])
+                    rest = perc.split("%")[0]
+                    rest2 = perc.split("%")[1]
+                    perc = int( re.sub('[^0-9,]', "", rest) )
+                    reviews = int( re.sub('[^0-9,]', "", rest2).replace(",", "") )
+                except:
+                    perc = item.perc
+                    reviews = item.reviews
+                    print("failed to update perc & reviews %s " % item.steam_id)
+            else:
                 perc = item.perc
-                reviews = item.reviews
-                print("failed to update perc & reviews %s " % item.steam_id)
-        else:
-            perc = item.perc
-        
-        released = soup.select(".user_reviews .release_date .date")
-        if len(released) > 0:
-            try:
-                released = str(released[0].contents[0])
-            except:
+            
+            released = soup.select(".user_reviews .release_date .date")
+            if len(released) > 0:
+                try:
+                    released = str(released[0].contents[0])
+                except:
+                    released = item.released
+            else:
                 released = item.released
-        else:
-            released = item.released
 
-        obj = {
-            "steam_id": item.steam_id,
-            "title": item.title,
-            "released": released,
-            "reviews": reviews,
-            "sentiment": sentiment,
-            "perc": perc,
-            "followers": followers,
-            "thumb_url": item.thumb_url,
-            "new_release": False,
-            "top_seller": False
-        }
+            obj = {
+                "steam_id": item.steam_id,
+                "title": item.title,
+                "released": released,
+                "reviews": reviews,
+                "sentiment": sentiment,
+                "perc": perc,
+                "followers": followers,
+                "thumb_url": item.thumb_url,
+                "new_release": False,
+                "top_seller": False
+            }
 
-        results.append(obj)
+            results.append(obj)
 
-        save_steam_obj(item.steam_id, obj)
+            save_steam_obj(item.steam_id, obj)
+        
+        except:
+            continue
 
     return results
 
