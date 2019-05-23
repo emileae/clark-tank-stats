@@ -1,0 +1,39 @@
+body, html, h1, h2, h3, h4, h5, .title, table, tr, th, tbody, .table, .content {
+    background-color: #1B364A;
+    color: #BDBBB9;
+  }
+
+  .content table thead th{
+    background-color: #1B364A;
+    color: #BDBBB9;
+  }
+  .content table th{
+    background-color: #1B364A;
+    color: #BDBBB9;
+  }
+
+  #sales-modal .modal-content{
+    background-color: #446b89;
+    padding: 2rem;
+    border-radius: 1rem;
+  }
+  #sales-modal .modal-content input{
+    width: 15rem;
+    display: inline-block;
+    margin: auto;
+    margin-top: 0.5rem;
+  }
+
+  a:hover {
+      color: #fff;
+  }
+
+  #sales-modal-trigger{
+    background: transparent;
+    color: #fff;
+    transform: translateY(-0.4rem);
+  }
+
+  .hidden{
+      display: none;
+  }

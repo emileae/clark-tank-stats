@@ -30,6 +30,30 @@ CORS(app)# currently this allows all origins access to the API
 #  ROUTING
 # ======================================================
 
+@app.route('/sales', methods=['POST'])
+def game_sales():
+    req_json = request.get_json()
+    platform = req_json["platform"]
+    link = req_json["link"]
+    steamid = req_json["steamid"]
+    salesd1 = req_json["salesd1"]
+    salesw1 = req_json["salesw1"]
+    salesm1 = req_json["salesm1"]
+    salesy1 = req_json["salesy1"]
+    contact = req_json["contact"]
+
+    salesstats = model.SalesStats()
+    salesstats.platform = platform
+    salesstats.link = link
+    salesstats.steamid = steamid
+    salesstats.salesd1 = salesd1
+    salesstats.salesw1 = salesw1
+    salesstats.salesm1 = salesm1
+    salesstats.salesy1 = salesy1
+    salesstats.contact = contact
+    salesstats.put()
+    return "success"
+
 @app.route('/')
 def home():
     q = request.args.get('q')
@@ -51,24 +75,36 @@ def trend(steam_id):
     
     parsed_items = {}
     time = []
+    time_unix = []
     followers = []
     reviews = []
     sentiment = []
     perc = []
     for item in items:
         time.append(item.time.strftime('%H:%M %m/%d/%Y'))
+        time_unix.append((item.time - datetime.datetime(1970,1,1)).total_seconds())
         followers.append(item.followers)
         reviews.append(item.reviews)
         sentiment.append(item.sentiment)
         perc.append(item.perc)
     
     parsed_items["time"] = time
+    parsed_items["time_unix"] = time_unix
     parsed_items["followers"] = followers
     parsed_items["reviews"] = reviews
     parsed_items["sentiment"] = sentiment
     parsed_items["perc"] = perc
 
-    return render_template("trend.html", items=json.dumps(parsed_items), game_data=game_data)
+    game_json = {
+        "created": game_data.created.strftime('%H:%M %m/%d/%Y'),
+        "created_unix": (game_data.created - datetime.datetime(1970,1,1)).total_seconds()
+    }
+
+    if game_data.released_datetime:
+        game_json["released"] = (game_data.released_datetime - datetime.datetime(1970,1,1)).total_seconds()
+
+
+    return render_template("trend.html", items=json.dumps(parsed_items), game_data=game_data, game_json=json.dumps(game_json))
 
 @app.route('/cron/update_games')
 def cron_update_games():

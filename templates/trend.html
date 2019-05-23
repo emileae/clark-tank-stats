@@ -17,24 +17,47 @@
 
     gtag('config', 'UA-64376900-2');
   </script>
+
+<link rel="stylesheet" href="/static/main.css">
 </head>
+
+<!-- 604800 seconds in a week -->
 
 <body>
   <section class="section">
     <div class="container">
-      <a href="/">
-          <h1 class="title">
-            Clark Tank - Steam Community Followers
-          </h1>
-      </a>
-
-      <div>
-        Inspired by <a href="https://youtu.be/X_skUDML0z4?t=193" target="_blank">this</a> episode of Clark Tank
-      </div>
-
-      <h3>Trend for {{game_data.title}}</h3>
+      <h1 class="title">
+        Clark Tank - Steam Community Followers
+      </h1>
 
       <div class="content">
+        <a href="/">Home</a>
+      </div>
+
+      <div class="content">
+        Are you a gamedev, <u>with a released game</u>? Help out the community and <a id="sales-modal-trigger" class="button is-outlined">share your sales stats</a> with us.
+        <br/>
+        Contact me on twitter (<a href="https://twitter.com/emiru84" target="_blank">@emiru84</a>) if you have any questions.
+      </div>
+
+      <h2>Trend for {{game_data.title}}</h2>
+
+      <div class="content">
+
+          <div class="buttons is-grouped">
+            <button id="b0" class="button">All Data</button>
+            <button id="b1" class="button">1 week after arriving on steam</button>
+            <button id="b2" class="button">1 Week after release</button>
+          </div>
+
+          <div>
+            <p>
+              Data is collected daily from the steam new releases page. 
+              <br/>So records start from whenever a game appears there.
+              <br/>I've noticed that some games appear to have a large number of community followers before appearing in the steam new releases.
+              </br> If anyone has any tips on how to get a list of community games as they are released, i.e. from 0 community followers, please drop me a line on twitter (<a href="https://twitter.com/emiru84" target="_blank">@emiru84</a>).
+            </p>
+          </div>
 
         <div id="plot"><!-- Plotly chart will be drawn inside this DIV --></div>
 
@@ -42,25 +65,169 @@
     </div>
   </section>
 
+  <div id="sales-modal" class="modal">
+      <div class="modal-background"></div>
+      <div class="modal-content">
+        <h3>Your Game Stats</h3>
+        <p>
+          Complete as much or as little as you like, <br/>
+          we may contact you through one of your provided contact links for verification purposes. We won't keep or reveal your contact details publicly.
+          Approximate numbers are better than no numbers.
+          <br/>
+        </p>
+        <form>
+          <div class="field">
+            <div class="control">
+              <select id="game-platform" class="select">
+                <option selected>Steam</option>
+                <option>Epic</option>
+                <option>GOG</option>
+                <option>Humble Bundle</option>
+                <option>Itch.io</option>
+                <option>Crytivo</option>
+                <option>Other</option>
+              </select>
+            </div>
+          </div>
+          <div class="field">
+              <div class="control">
+                <input id="game-link" class="input" name="game-link" type="text" placeholder="Link to your game">
+              </div>
+          </div>
+  
+          <div class="field">
+              <div class="control">
+                  <input id="game-steamid" class="input" name="game-steamid" type="text" placeholder="steam ID (if steam is the platform)">
+                </div>
+          </div>
+          
+          <div class="field">
+              <div class="control">
+                  <input id="game-salesd1" class="input" name="game-salesd1" type="text" placeholder="#sales day 1">
+                </div>
+          </div>
+          
+          <div class="field">
+              <div class="control">
+                  <input id="game-salesw1" class="input" name="game-salesw1" type="text" placeholder="#sales week 1">
+                </div>
+          </div>
+  
+          <div class="field">
+              <div class="control">
+                  <input id="game-salesm1" class="input" name="game-salesm1" type="text" placeholder="#sales month 1">
+                </div>
+          </div>
+  
+          <div class="field">
+              <div class="control">
+                  <input id="game-salesy1" class="input" name="game-salesy1" type="text" placeholder="#sales year 1">
+                </div>
+          </div>
+  
+          <div class="field">
+              <div class="control">
+                  <input id="game-contact" class="input" name="game-contact" type="text" placeholder="Official contact link, preferably your studio twitter account or email address.">
+                </div>
+          </div>
+  
+  
+          <div class="field">
+            <div class="control">
+              <button id="gamesalesstats" class="button">Submit</button>
+            </div>
+          </div>
+        </form>
+      </div>
+      <button class="modal-close is-large" aria-label="close"></button>
+    </div>
+
+  <script
+  src="https://code.jquery.com/jquery-3.4.1.min.js"
+  integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+  crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.18.0/axios.min.js"></script>
+
   <script>
+      var time_type = 0;// 0, 1, 2
       var items = {{items|safe}};
+      var game_json = {{game_json|safe}};
+      console.log(game_json);
+
+      if (!game_json.released){
+        $("#b2").addClass("hidden");
+      }
+
+      $('body').on('click', "#b0", function(){
+        time_type = 0;
+        render_plot();
+      })
+
+      $('body').on('click', "#b1", function(){
+        time_type = 1;
+        render_plot();
+      })
+
+      $('body').on('click', "#b2", function(){
+        time_type = 2;
+        render_plot();
+      })
+
+      // render different time intervals
+
+
+    var render_plot = function(){
+
+      var plot_items = []
+      var plot_time = []
+      var plot_reviews = []
+
+      if (time_type == 0){
+        items.time_unix.map(function(t, i){
+          plot_items.push(items.followers[i]);
+          plot_time.push(items.time[i]);
+          plot_reviews.push(items.reviews[i]);
+        });
+      }else if (time_type == 1){
+        items.time_unix.map(function(t, i){
+          if (t > game_json.created_unix && t <= (game_json.created_unix + 604800)){
+            plot_items.push(items.followers[i]);
+            plot_time.push(items.time[i]);
+            plot_reviews.push(items.reviews[i]);
+          }
+        });
+      }else if (time_type == 2){
+        items.time_unix.map(function(t, i){
+          if (t > game_json.created_unix && t <= (game_json.released + 604800)){
+            plot_items.push(items.followers[i]);
+            plot_time.push(items.time[i]);
+            plot_reviews.push(items.reviews[i]);
+          }
+        });
+      }
+
       var data = [
         {
-          x: items.time,
-          y: items.followers,
+          x: plot_time,
+          y: plot_items,
           name: "Followers",
           type: 'scatter'
         },
         {
-          x: items.time,
-          y: items.reviews,
+          x: plot_time,
+          y: plot_reviews,
           name: "Reviews",
           type: 'scatter'
         }
       ];
 
       Plotly.newPlot('plot', data, {}, {showSendToCloud: false});
+
+    }
+
+    render_plot();
   </script>
+  <script src="/static/modal-form.js"></script>
 </body>
 
 </html>

@@ -24,3 +24,15 @@ class FollowersOverTime(ndb.Model):
     perc = ndb.IntegerProperty()
     created = ndb.DateTimeProperty(auto_now_add=True)
 
+class SalesStats(ndb.Model):
+    platform = ndb.StringProperty()
+    link = ndb.StringProperty()
+    steamid = ndb.StringProperty()
+    salesd1 = ndb.StringProperty()
+    salesw1 = ndb.StringProperty()
+    salesm1 = ndb.StringProperty()
+    salesy1 = ndb.StringProperty()
+    contact = ndb.StringProperty()
+    verified = ndb.BooleanProperty(default=False)
+    created = ndb.DateTimeProperty(auto_now_add=True)
+

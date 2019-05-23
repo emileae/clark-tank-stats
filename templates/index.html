@@ -17,6 +17,8 @@
     gtag('config', 'UA-64376900-2');
   </script>
 
+<link rel="stylesheet" href="/static/main.css">
+
 </head>
 
 <body>
@@ -26,11 +28,37 @@
         Clark Tank - Steam Community Followers
       </h1>
 
-      <div>
+      <!-- <div>
         Inspired by <a href="https://youtu.be/X_skUDML0z4?t=193" target="_blank">this</a> episode of Clark Tank
+      </div> -->
+
+      <div class="content">
+        Are you a gamedev, <u>with a released game</u>? Help out the community and <a id="sales-modal-trigger" class="button is-outlined">share your sales stats</a> with us.
+        <br/>
+        Contact me on twitter (<a href="https://twitter.com/emiru84" target="_blank">@emiru84</a>) if you have any questions.
       </div>
 
-      <nav class="level">
+      <div class="section">
+          <div class="dropdown is-hoverable">
+              <div class="dropdown-trigger">
+                <button class="button" aria-haspopup="true" aria-controls="dropdown-menu">
+                  <span>Order By</span>
+                  <span class="icon is-small">
+                    <i class="fas fa-angle-down" aria-hidden="true"></i>
+                  </span>
+                </button>
+              </div>
+              <div class="dropdown-menu" id="dropdown-menu" role="menu">
+                <div class="dropdown-content">
+                  <a href="/?q=followers" class="dropdown-item is-active">Followers</a>
+                  <a href="/?q=released" class="dropdown-item">Released</a>
+                  <a href="/?q=reviews" class="dropdown-item">Reviews</a>
+                </div>
+              </div>
+            </div>
+      </div>
+
+      <!-- <nav class="level">
           <p class="level-item has-text-centered">
               Order by:
           </p>
@@ -43,7 +71,7 @@
           <p class="level-item has-text-centered">
             <a href="/?q=reviews" class="link is-info">Reviews</a>
           </p>
-        </nav>
+        </nav> -->
 
       <div class="content">
 
@@ -80,6 +108,93 @@
       </div>
     </div>
   </section>
+<!-- Modals -->
+
+  <div id="sales-modal" class="modal">
+    <div class="modal-background"></div>
+    <div class="modal-content">
+      <h3>Your Game Stats</h3>
+      <p>
+        Complete as much or as little as you like, <br/>
+        we may contact you through one of your provided contact links for verification purposes. We won't keep or reveal your contact details publicly.
+        Approximate numbers are better than no numbers.
+        <br/>
+      </p>
+      <form>
+        <div class="field">
+          <div class="control">
+            <select id="game-platform" class="select">
+              <option selected>Steam</option>
+              <option>Epic</option>
+              <option>GOG</option>
+              <option>Humble Bundle</option>
+              <option>Itch.io</option>
+              <option>Crytivo</option>
+              <option>Other</option>
+            </select>
+          </div>
+        </div>
+        <div class="field">
+            <div class="control">
+              <input id="game-link" class="input" name="game-link" type="text" placeholder="Link to your game">
+            </div>
+        </div>
+
+        <div class="field">
+            <div class="control">
+                <input id="game-steamid" class="input" name="game-steamid" type="text" placeholder="steam ID (if steam is the platform)">
+              </div>
+        </div>
+        
+        <div class="field">
+            <div class="control">
+                <input id="game-salesd1" class="input" name="game-salesd1" type="text" placeholder="#sales day 1">
+              </div>
+        </div>
+        
+        <div class="field">
+            <div class="control">
+                <input id="game-salesw1" class="input" name="game-salesw1" type="text" placeholder="#sales week 1">
+              </div>
+        </div>
+
+        <div class="field">
+            <div class="control">
+                <input id="game-salesm1" class="input" name="game-salesm1" type="text" placeholder="#sales month 1">
+              </div>
+        </div>
+
+        <div class="field">
+            <div class="control">
+                <input id="game-salesy1" class="input" name="game-salesy1" type="text" placeholder="#sales year 1">
+              </div>
+        </div>
+
+        <div class="field">
+            <div class="control">
+                <input id="game-contact" class="input" name="game-contact" type="text" placeholder="Official contact link, preferably your studio twitter account or email address.">
+              </div>
+        </div>
+
+
+        <div class="field">
+          <div class="control">
+            <button id="gamesalesstats" class="button">Submit</button>
+          </div>
+        </div>
+      </form>
+    </div>
+    <button class="modal-close is-large" aria-label="close"></button>
+  </div>
+
+  <script
+  src="https://code.jquery.com/jquery-3.4.1.min.js"
+  integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+  crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.18.0/axios.min.js"></script>
+
+  <script src="/static/modal-form.js"></script>
+
 </body>
 
 </html>
